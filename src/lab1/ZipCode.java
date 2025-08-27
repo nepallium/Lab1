@@ -1,5 +1,7 @@
 package lab1;
 
+import java.util.Arrays;
+
 /**
  *
  * @author 2476382
@@ -28,19 +30,16 @@ public class ZipCode {
     }
 
     public ZipCode(String barCode) {
-        if (barCode.length() < 2) {
+        if ((barCode.length() - 2) % 5 != 0) {
+            System.out.println("Error: bar code must be in multiples of 5-binary digits");
             return;
+
         } else if (barCode.charAt(0) != '1' || barCode.charAt(barCode.length() - 1) != '1') {
             System.out.println("Error: bar code missing a 1 at start or end");
             return;
-        } else if ((barCode.length() - 2) % 5 != 0) {
-            System.out.println("Error: bar code must be in multiples of 5-binary digits");
         }
 
-//        for (int i = 0; i < barCode.length; i += 5) {
-//            
-//        }
-        this.barCode = barCode;
+        this.Zip = this.parseBarCode(barCode);
     }
 
     public String GetBarCode() {
@@ -56,7 +55,7 @@ public class ZipCode {
         }
 
         if (codeStr.length() < 5) {
-            codeStr = String.format("%05d", codeStr);
+            codeStr = String.format("%05d", Integer.valueOf(codeStr));
         }
 
         this.barCode += "1";
@@ -64,11 +63,32 @@ public class ZipCode {
             this.barCode += digitWeights[Character.getNumericValue(digit)];
         }
         this.barCode += "1";
-        
+
         return barCode;
     }
 
-//    private int parseBarCode(String barCodeStr) {
-//        
-//    }
+    private int parseBarCode(String barCodeStr) {
+        barCodeStr = barCodeStr.substring(1, barCodeStr.length() - 1);
+
+        String zipStr = "";
+
+        for (int i = 0; i < barCodeStr.length(); i += 5) {
+            String digitChars = barCodeStr.substring(i, i + 5);
+
+            boolean foundDigit = false;
+            for (int j = 0; j < digitWeights.length; j++) {
+                if (digitWeights[j].equals(digitChars)) {
+                    zipStr += j;
+                    foundDigit = true;
+                }
+            }
+
+            if (!foundDigit) {
+                System.out.println(digitChars + " has invalid sequence in the bar code");
+                return -1;
+            }
+        }
+
+        return Integer.parseInt(zipStr);
+    }
 }
