@@ -72,6 +72,8 @@ public class ZipCode {
 
         String zipStr = "";
 
+        boolean invalidSequence = false;
+        boolean invalidDigits = false;
         for (int i = 0; i < barCodeStr.length(); i += 5) {
             String digitChars = barCodeStr.substring(i, i + 5);
 
@@ -82,10 +84,18 @@ public class ZipCode {
                     foundDigit = true;
                 }
             }
+            
+            for (char c : digitChars.toCharArray()) {
+                if (c != '1' && c != '0') {
+                    System.out.printf("bar code character: %c must be '0' or '1'\n", c);
+                    invalidDigits = true;
+                }
+            }
 
-            if (!foundDigit) {
+            if (!foundDigit && !invalidDigits) {
+                invalidSequence = true;
+                zipStr = "-1";
                 System.out.println(digitChars + " has invalid sequence in the bar code");
-                return -1;
             }
         }
 
