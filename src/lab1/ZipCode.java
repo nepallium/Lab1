@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 /**
  *
- * @author 2476382
+ * @author Alex Huang 2476382
  */
 public class ZipCode {
 
@@ -52,6 +52,7 @@ public class ZipCode {
 
         if (codeStr.length() > 5) {
             System.out.println(this.Zip + " zip code is more than 5 digits");
+            codeStr = String.valueOf(this.Zip % 100000);
         }
 
         if (codeStr.length() < 5) {
@@ -67,12 +68,17 @@ public class ZipCode {
         return barCode;
     }
 
+    /**
+     * Converts a binary string bar code into the 5 digit zip code equivalent
+     * 
+     * @param barCodeStr
+     * @return the parsed Zip code
+     */
     private int parseBarCode(String barCodeStr) {
         barCodeStr = barCodeStr.substring(1, barCodeStr.length() - 1);
 
         String zipStr = "";
 
-        boolean invalidSequence = false;
         boolean invalidDigits = false;
         for (int i = 0; i < barCodeStr.length(); i += 5) {
             String digitChars = barCodeStr.substring(i, i + 5);
@@ -84,7 +90,7 @@ public class ZipCode {
                     foundDigit = true;
                 }
             }
-            
+
             for (char c : digitChars.toCharArray()) {
                 if (c != '1' && c != '0') {
                     System.out.printf("bar code character: %c must be '0' or '1'\n", c);
@@ -93,7 +99,6 @@ public class ZipCode {
             }
 
             if (!foundDigit && !invalidDigits) {
-                invalidSequence = true;
                 zipStr = "-1";
                 System.out.println(digitChars + " has invalid sequence in the bar code");
             }
